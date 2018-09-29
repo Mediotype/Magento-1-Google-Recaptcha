@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <checkout_onepage_index>
+        <reference  name="head">
+            <block type="mediotype_recaptcha/recaptcha" name="google.recaptcha.js" template="mediotype/recaptcha/js.phtml" output="toHtml" after="-" />
+        </reference>
+        <reference name="checkout.onepage.payment">
+            <action method="setTemplate"><template>mediotype/recaptcha/checkout/onepage/payment.phtml</template></action>
+            <block type="mediotype_recaptcha/recaptcha" name="google.recaptcha.paymentform" as="recaptcha" template="mediotype/recaptcha/recaptcha.phtml" />
+        </reference>
+    </checkout_onepage_index>
+</layout>

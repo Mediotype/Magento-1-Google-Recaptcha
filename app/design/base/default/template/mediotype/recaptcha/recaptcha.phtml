@@ -1,0 +1,23 @@
+<?php
+/**
+ * block file for the recaptcha
+ * @var $this Mediotype_Recaptcha_Block_Recaptcha
+ */
+?>
+<?php if($this->getIsEnabled()): ?>
+<div class="g-recaptcha"
+     data-sitekey="<?php echo $this->getSiteKey() ?>"
+     data-callback="recaptchaCallback"
+     style="margin-top:10px">
+</div>
+<div class="recaptcha-required no-display">
+    <span style="color:red">Captcha is required</span>
+</div>
+<script type="text/javascript">
+    function recaptchaCallback(response) {
+        new Ajax.Request('<?php echo $this->getSetUrl() ?>', {
+            parameters: {response_data:response}
+        });
+    }
+</script>
+<?php endif; ?>

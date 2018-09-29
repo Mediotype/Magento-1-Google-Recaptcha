@@ -1,0 +1,5 @@
+app/code/community/Mediotype/Recaptcha/ app/code/community/Mediotype/Recaptcha/
+app/design/frontend/base/default/layout/mediotype/recaptcha/ app/design/frontend/base/default/layout/recaptcha/
+app/design/frontend/base/default/template/mediotype/recaptcha/ app/design/frontend/base/default/template/mediotype/recaptcha/
+app/etc/modules/Mediotype_Recaptcha.xml app/etc/modules/Mediotype_Recaptcha.xml
+

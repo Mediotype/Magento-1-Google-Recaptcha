@@ -1,0 +1,84 @@
+<?php
+/**
+ * output file for captcha
+ */
+$recaptchaHelper = $this->helper('mediotype_recaptcha');
+/** @var $recaptchaHelper Mediotype_Recaptcha_Helper_Data */
+?>
+<script type="text/javascript">
+//<![CDATA[
+    var quoteBaseGrandTotal = <?php echo (float)$this->getQuoteBaseGrandTotal(); ?>;
+    var checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+    var payment = new Payment('co-payment-form', '<?php echo $this->getUrl('checkout/onepage/savePayment') ?>');
+    var lastPrice;
+//]]>
+</script>
+<form action="" id="co-payment-form">
+    <fieldset>
+        <?php echo $this->getChildHtml('methods') ?>
+        <?php echo $this->getChildHtml('recaptcha') ?>
+    </fieldset>
+</form>
+<div class="tool-tip" id="payment-tool-tip" style="display:none;">
+    <div class="btn-close"><a href="#" id="payment-tool-tip-close" title="<?php echo $this->__('Close') ?>"><?php echo $this->__('Close') ?></a></div>
+    <div class="tool-tip-content"><img src="<?php echo $this->getSkinUrl('images/cvv.gif') ?>" alt="<?php echo $this->__('Card Verification Number Visual Reference') ?>" title="<?php echo $this->__('Card Verification Number Visual Reference') ?>" /></div>
+</div>
+<div class="buttons-set" id="payment-buttons-container">
+    <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+    <p class="back-link"><a href="#" onclick="checkout.back(); return false;"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+    <button type="button" class="button"
+            onclick="<?php if($recaptchaHelper->getEnabled()): ?>rPayment()<?php else: ?>payment.save()<?php endif; ?>">
+        <span><span><?php echo $this->__('Continue') ?></span></span>
+    </button>
+    <span class="please-wait" id="payment-please-wait" style="display:none;">
+        <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $this->__('Loading next step...') ?>" title="<?php echo $this->__('Loading next step...') ?>" class="v-middle" /> <?php echo $this->__('Loading next step...') ?>
+    </span>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    function toggleToolTip(event){
+        if($('payment-tool-tip')){
+            $('payment-tool-tip').setStyle({
+                top: (Event.pointerY(event)-560)+'px'//,
+                //left: (Event.pointerX(event)+100)+'px'
+            })
+            $('payment-tool-tip').toggle();
+        }
+        Event.stop(event);
+    }
+    if($('payment-tool-tip-close')){
+        Event.observe($('payment-tool-tip-close'), 'click', toggleToolTip);
+    }
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+    payment.currentMethod = "<?php echo $this->getChild('methods')->getSelectedMethodCode() ?>";
+//]]>
+</script>
+<?php if($recaptchaHelper->getEnabled()): ?>
+<script type="text/javascript">
+    //<![CDATA[
+    function rPayment() {
+        //make sure form is filled out
+        var validator = new Validation(payment.form);
+        if(validator.validate() == false) {
+            return;
+        }
+        new Ajax.Request('<?php echo $recaptchaHelper->getSendUrl() ?>', {
+           onComplete: function(transport) {
+               var json = JSON.parse(transport.responseText);
+               //make sure response is good
+               if(json.success == true) {
+                   payment.save();
+               } else {
+                   $$('.recaptcha-required.no-display').each(function (item) {
+                       item.removeClassName('no-display');
+                   });
+               }
+           }
+        });
+    }
+    //]]>
+</script>
+<?php endif; ?>
